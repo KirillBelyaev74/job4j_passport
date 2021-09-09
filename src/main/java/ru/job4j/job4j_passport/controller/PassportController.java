@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.job4j_passport.model.Passport;
 import ru.job4j.job4j_passport.service.PassportService;
-import ru.job4j.job4j_passport.service.kafka.KafkaProducerService;
 
 import javax.validation.Valid;
 import java.util.List;

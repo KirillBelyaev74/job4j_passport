@@ -1,4 +1,4 @@
-package ru.job4j.job4j_passport.config.kafka;
+package ru.job4j.job4j_passport.config.kafka.toString;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class KafkaConsumerConfig {
+public class KafkaConsumerConfigString {
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String kafkaServer;
@@ -43,14 +43,4 @@ public class KafkaConsumerConfig {
         props.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaGroupId);
         return props;
     }
-
-//    @Bean
-//    public Map<String, String> consumerConfigs() {
-//        Map<String, Object> props = new HashMap<>();
-//        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
-//        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-//        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-//        props.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaGroupId);
-//        return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer());
-//    }
 }

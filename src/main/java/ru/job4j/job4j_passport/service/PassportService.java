@@ -4,7 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.job4j.job4j_passport.model.Passport;
 import ru.job4j.job4j_passport.repository.PassportRepository;
-import ru.job4j.job4j_passport.service.kafka.KafkaProducerService;
+import ru.job4j.job4j_passport.service.kafka.producer.KafkaProducerServiceToPassport;
+import ru.job4j.job4j_passport.service.kafka.producer.KafkaProducerServiceToString;
 import ru.job4j.job4j_passport.validate.PassportValidate;
 
 import java.util.List;
@@ -14,10 +15,10 @@ public class PassportService {
 
     private final PassportRepository repository;
     private final PassportValidate passportValidate;
-    private final KafkaProducerService kafkaProducerService;
+    private final KafkaProducerServiceToPassport kafkaProducerService;
 
     @Autowired
-    public PassportService(PassportRepository repository, PassportValidate passportValidate, KafkaProducerService kafkaProducerService) {
+    public PassportService(PassportRepository repository, PassportValidate passportValidate, KafkaProducerServiceToPassport kafkaProducerService) {
         this.repository = repository;
         this.passportValidate = passportValidate;
         this.kafkaProducerService = kafkaProducerService;

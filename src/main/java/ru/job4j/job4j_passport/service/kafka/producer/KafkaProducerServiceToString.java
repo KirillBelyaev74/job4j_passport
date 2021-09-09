@@ -1,4 +1,4 @@
-package ru.job4j.job4j_passport.service.kafka;
+package ru.job4j.job4j_passport.service.kafka.producer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -9,30 +9,19 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-public class KafkaProducerService {
+public class KafkaProducerServiceToString {
 
     private KafkaTemplate<String, String> kafkaTemplate;
 
     @Autowired
-    public KafkaProducerService(KafkaTemplate<String, String> kafkaTemplate) {
+    public KafkaProducerServiceToString(KafkaTemplate<String, String> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
-
 
     public void sendUnavailablePassports(List<Passport> passports) {
         StringBuilder stringBuilder = new StringBuilder();
         passports.stream().filter(Objects::nonNull).forEach(p -> stringBuilder.append(parserMessage(p, " просрочен. Его необходимо заменить.")));
-        kafkaTemplate.send("messagePassport", "unavailable", stringBuilder.toString());
-    }
-
-    public void sendSavePassports(Passport passport) {
-        String resultMessage = parserMessage(passport, " сохранен.");
-        kafkaTemplate.send("messagePassport", "save", resultMessage);
-    }
-
-    public void sendDeletePassports(Passport passport) {
-        String resultMessage = parserMessage(passport, " удален.");
-        kafkaTemplate.send("messagePassport", "delete", resultMessage);
+        kafkaTemplate.send("unavailablePassports", "unavailable", stringBuilder.toString());
     }
 
     private String parserMessage(Passport p, String message) {

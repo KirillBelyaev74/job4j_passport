@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import ru.job4j.job4j_passport.model.Passport;
-import ru.job4j.job4j_passport.service.kafka.KafkaProducerService;
+import ru.job4j.job4j_passport.service.kafka.producer.KafkaProducerServiceToString;
 
 import java.util.List;
 
@@ -18,13 +18,13 @@ import java.util.List;
 public class KafkaProducerController {
 
     private RestTemplate restTemplate;
-    private KafkaProducerService kafkaProducerService;
+    private KafkaProducerServiceToString kafkaProducerService;
 
     @Value("${url}")
     private String url;
 
     @Autowired
-    public KafkaProducerController(RestTemplate restTemplate, KafkaProducerService kafkaProducerService) {
+    public KafkaProducerController(RestTemplate restTemplate, KafkaProducerServiceToString kafkaProducerService) {
         this.restTemplate = restTemplate;
         this.kafkaProducerService = kafkaProducerService;
     }
