@@ -3,10 +3,10 @@ package ru.job4j.job4j_passport.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.job4j_passport.model.Passport;
 import ru.job4j.job4j_passport.service.PassportService;
+import ru.job4j.job4j_passport.service.kafka.KafkaProducerService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -29,7 +29,7 @@ public class PassportController {
     }
 
     @PutMapping("/")
-    public ResponseEntity<Void> update(@Valid @RequestBody Passport passport) {
+    public ResponseEntity<Void> update(@RequestBody Passport passport) {
         passportService.saveOrUpdate(passport);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -43,6 +43,11 @@ public class PassportController {
     @GetMapping("/")
     public List<Passport> getAll() {
         return passportService.findAll();
+    }
+
+    @GetMapping("/id/{id}")
+    public Passport getById(@PathVariable int id) {
+        return passportService.findById(id);
     }
 
     @GetMapping("/{series}")

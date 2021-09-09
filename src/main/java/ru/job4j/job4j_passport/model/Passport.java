@@ -1,18 +1,18 @@
 package ru.job4j.job4j_passport.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
+import java.util.Objects;
 
 @NamedQuery(name = "findAll", query = "from Passport")
 @NamedQuery(name = "findBySeries", query = "from Passport where series =: series")
 @NamedQuery(name = "findUnavailable", query = "from Passport where finished <: date")
 @NamedQuery(name = "deleteById", query = "delete Passport where id =: id")
 @Entity
-@Table(name = "passport", uniqueConstraints = {@UniqueConstraint(columnNames = {"series", "surname"})})
+@Table(name = "passport", uniqueConstraints = {@UniqueConstraint(columnNames = {"series", "number"})})
 public class Passport {
 
     @Id
@@ -110,5 +110,39 @@ public class Passport {
 
     public void setFinished(Date finished) {
         this.finished = finished;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Passport passport = (Passport) o;
+        return id == passport.id &&
+                series == passport.series &&
+                number == passport.number &&
+                Objects.equals(name, passport.name) &&
+                Objects.equals(surname, passport.surname) &&
+                Objects.equals(middleName, passport.middleName) &&
+                Objects.equals(created, passport.created) &&
+                Objects.equals(finished, passport.finished);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, surname, middleName, series, number, created, finished);
+    }
+
+    @Override
+    public String toString() {
+        return "Passport{"
+                + "id=" + id
+                + ", name='" + name + '\''
+                + ", surname='" + surname + '\''
+                + ", middleName='" + middleName + '\''
+                + ", series=" + series
+                + ", number=" + number
+                + ", created=" + created
+                + ", finished=" + finished
+                + '}';
     }
 }

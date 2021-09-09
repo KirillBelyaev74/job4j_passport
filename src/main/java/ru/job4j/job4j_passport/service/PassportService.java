@@ -2,9 +2,10 @@ package ru.job4j.job4j_passport.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.job4j.job4j_passport.exceptionHandler.IllegalSeriesOrNumberException;
 import ru.job4j.job4j_passport.model.Passport;
-import ru.job4j.job4j_passport.repository.hibernate.PassportRepository;
+import ru.job4j.job4j_passport.repository.PassportRepository;
+import ru.job4j.job4j_passport.service.kafka.KafkaProducerService;
+import ru.job4j.job4j_passport.validate.PassportValidate;
 
 import java.util.List;
 
@@ -12,44 +13,45 @@ import java.util.List;
 public class PassportService {
 
     private final PassportRepository repository;
+    private final PassportValidate passportValidate;
+    private final KafkaProducerService kafkaProducerService;
 
     @Autowired
-    public PassportService(PassportRepository repository) {
+    public PassportService(PassportRepository repository, PassportValidate passportValidate, KafkaProducerService kafkaProducerService) {
         this.repository = repository;
+        this.passportValidate = passportValidate;
+        this.kafkaProducerService = kafkaProducerService;
     }
 
     public Passport saveOrUpdate(Passport passport) {
-        if (String.valueOf(passport.getSeries()).length() != 4 || String.valueOf(passport.getNumber()).length() != 6) {
-            throw new IllegalSeriesOrNumberException
-                    ("Серия паспорта должна состоять из четырех цифр.\n" +
-                            "Номер паспорта должен состоять из шести цифр.\n" +
-                            "Ваша серия паспорта " + passport.getSeries() + " и ваш номер паспорта " + passport.getNumber());
-        }
-        return repository.saveOrUpdate(passport);
+        passportValidate.validatePassport(passport);
+        passport = repository.save(passport);
+        kafkaProducerService.sendSavePassports(passport);
+        return passport;
     }
 
     public List<Passport> findAll() {
         return repository.findAll();
     }
 
+    public Passport findById(int id) {
+        passportValidate.validateId(id);
+        return repository.findById(id);
+    }
+
     public List<Passport> findBySeries(int series) {
-        if (String.valueOf(series).length() != 4) {
-            throw new IllegalSeriesOrNumberException
-                    ("Серия паспорта должна состоять из четырех цифр.\n" +
-                            "Вы пытаетесь найти паспорт с серией " + series);
-        }
+        passportValidate.validateSeries(series);
         return repository.findBySeries(series);
     }
 
     public List<Passport> findUnavailable() {
-        return repository.findUnavailable();
+        return repository.findByUnavailable();
     }
 
     public void deleteById(int id) {
-        if (id <= 0) {
-            throw new IllegalArgumentException
-                    ("ID не должен быть меньше или равен нулю. Ваш ID равен = " + id);
-        }
+        passportValidate.validateId(id);
+        Passport passport = findById(id);
+        kafkaProducerService.sendDeletePassports(passport);
         repository.deleteById(id);
     }
 }

@@ -35,13 +35,18 @@ public class PassportControllerApi {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable int id) {
-        restTemplate.delete(url + "/{id}", id);
+        restTemplate.delete(url + "{id}", id);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/")
     public List getAll() {
         return restTemplate.getForObject(url, List.class);
+    }
+
+    @GetMapping("/id/{id}")
+    public Passport getById(@PathVariable int id) {
+        return restTemplate.getForObject(url + "id/" + id, Passport.class);
     }
 
     @GetMapping("/{series}")
